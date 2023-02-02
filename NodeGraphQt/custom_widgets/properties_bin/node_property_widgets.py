@@ -67,7 +67,7 @@ class _PropertiesList(QtWidgets.QTableWidget):
         """
         delta = event.angleDelta().y() * 0.2
         self.verticalScrollBar().setValue(
-            self.verticalScrollBar().value() - delta
+            int(self.verticalScrollBar().value() - delta)
         )
 
 

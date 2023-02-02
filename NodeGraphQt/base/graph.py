@@ -1697,12 +1697,13 @@ class NodeGraph(QtCore.QObject):
             nodes (list[NodeGraphQt.BaseNode]):
                 list of nodes (default: selected nodes).
         """
+        from .json_encoder import MusicLangEncoder
         nodes = nodes or self.selected_nodes()
         if not nodes:
             return False
         clipboard = QtWidgets.QApplication.clipboard()
         serial_data = self._serialize(nodes)
-        serial_str = json.dumps(serial_data)
+        serial_str = json.dumps(serial_data, cls=MusicLangEncoder)
         if serial_str:
             clipboard.setText(serial_str)
             return True
@@ -1754,13 +1755,14 @@ class NodeGraph(QtCore.QObject):
         """
         Pastes nodes copied from the clipboard.
         """
+        from .json_encoder import MusicLangDecoder
         clipboard = QtWidgets.QApplication.clipboard()
         cb_text = clipboard.text()
         if not cb_text:
             return
 
         try:
-            serial_data = json.loads(cb_text)
+            serial_data = json.loads(cb_text, cls=MusicLangDecoder)
         except json.decoder.JSONDecodeError as e:
             print('ERROR: Can\'t Decode Clipboard Data:\n'
                   '"{}"'.format(cb_text))

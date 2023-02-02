@@ -1,5 +1,8 @@
+from PyQt5.QtWidgets import QPushButton
+
 from NodeGraphQt import BaseNode
 
+from Qt import QtCore, QtWidgets
 
 class DropdownMenuNode(BaseNode):
     """
@@ -68,3 +71,4 @@ class CheckboxNode(BaseNode):
         # create input and output port.
         self.add_input('in', color=(200, 100, 0))
         self.add_output('out', color=(0, 100, 200))
+

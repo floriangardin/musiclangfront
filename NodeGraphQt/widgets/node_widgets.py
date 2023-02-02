@@ -378,6 +378,188 @@ class NodeLineEdit(NodeBaseWidget):
             self.on_value_changed()
 
 
+class NodeTextEdit(NodeBaseWidget):
+    """
+    Displays as a ``QTextEdit`` in a node.
+
+    **Inherited from:** :class:`NodeBaseWidget`
+
+    .. note::
+        `To embed a` ``QLineEdit`` `in a node see func:`
+        :meth:`NodeGraphQt.BaseNode.add_text_input`
+    """
+
+    def __init__(self, parent=None, name='', label='', text=''):
+        super(NodeTextEdit, self).__init__(parent, name, label)
+        plt = self.palette()
+        bg_color = plt.alternateBase().color().getRgb()
+        text_color = plt.text().color().getRgb()
+        text_sel_color = plt.highlightedText().color().getRgb()
+        style_dict = {
+            'QTextEdit': {
+                'background': 'rgba({0},{1},{2},20)'.format(*bg_color),
+                'border': '1px solid rgb({0},{1},{2})'
+                          .format(*ViewerEnum.GRID_COLOR.value),
+                'border-radius': '3px',
+                'color': 'rgba({0},{1},{2},150)'.format(*text_color),
+                'selection-background-color': 'rgba({0},{1},{2},100)'
+                                              .format(*text_sel_color),
+            }
+        }
+        stylesheet = ''
+        for css_class, css in style_dict.items():
+            style = '{} {{\n'.format(css_class)
+            for elm_name, elm_val in css.items():
+                style += '  {}:{};\n'.format(elm_name, elm_val)
+            style += '}\n'
+            stylesheet += style
+        ledit = QtWidgets.QTextEdit()
+        ledit.setText(text)
+        ledit.setStyleSheet(stylesheet)
+        ledit.setAlignment(QtCore.Qt.AlignCenter)
+        ledit.textChanged.connect(self.on_value_changed)
+        ledit.clearFocus()
+        self.set_custom_widget(ledit)
+        self.widget().setMaximumHeight(120)
+
+    @property
+    def type_(self):
+        return 'NodeTextEditWidget'
+
+    def get_value(self):
+        """
+        Returns the widgets current text.
+
+        Returns:
+            str: current text.
+        """
+        return str(self.get_custom_widget().toPlainText())
+
+    def set_value(self, text=''):
+        """
+        Sets the widgets current text.
+
+        Args:
+            text (str): new text.
+        """
+        if text != self.get_value():
+            self.get_custom_widget().setText(text)
+            self.on_value_changed()
+
+class NodeSpinBoxEdit(NodeBaseWidget):
+    """
+    Displays as a ``QTextEdit`` in a node.
+
+    **Inherited from:** :class:`NodeBaseWidget`
+
+    .. note::
+        `To embed a` ``QLineEdit`` `in a node see func:`
+        :meth:`NodeGraphQt.BaseNode.add_text_input`
+    """
+
+    def __init__(self, parent=None, name='', label='', value=0):
+        super(NodeSpinBoxEdit, self).__init__(parent, name, label)
+        plt = self.palette()
+        bg_color = plt.alternateBase().color().getRgb()
+        text_color = plt.text().color().getRgb()
+        text_sel_color = plt.highlightedText().color().getRgb()
+        style_dict = {
+            'QSpinBox': {
+                'background': 'rgba({0},{1},{2},20)'.format(*bg_color),
+                'border': '1px solid rgb({0},{1},{2})'
+                          .format(*ViewerEnum.GRID_COLOR.value),
+                'border-radius': '3px',
+                'color': 'rgba({0},{1},{2},150)'.format(*text_color),
+                'selection-background-color': 'rgba({0},{1},{2},100)'
+                                              .format(*text_sel_color),
+            }
+        }
+        stylesheet = ''
+        for css_class, css in style_dict.items():
+            style = '{} {{\n'.format(css_class)
+            for elm_name, elm_val in css.items():
+                style += '  {}:{};\n'.format(elm_name, elm_val)
+            style += '}\n'
+            stylesheet += style
+        ledit = QtWidgets.QSpinBox()
+        ledit.setValue(value)
+        ledit.setStyleSheet(stylesheet)
+        ledit.setAlignment(QtCore.Qt.AlignCenter)
+        ledit.valueChanged.connect(self.on_value_changed)
+        ledit.clearFocus()
+        self.set_custom_widget(ledit)
+        self.widget().setMinimumWidth(100)
+        self.widget().setMaximumWidth(200)
+
+    @property
+    def type_(self):
+        return 'NodeTextEditWidget'
+
+    def get_value(self):
+        """
+        Returns the widgets current text.
+
+        Returns:
+            str: current text.
+        """
+        return self.get_custom_widget().value()
+
+    def set_value(self, text=''):
+        """
+        Sets the widgets current text.
+
+        Args:
+            text (str): new text.
+        """
+        if text != self.get_value():
+            self.get_custom_widget().setValue(text)
+            self.on_value_changed()
+
+
+class NodeButton(NodeBaseWidget):
+    """
+    Displays as a ``QPushButton`` in a node.
+
+    **Inherited from:** :class:`NodeBaseWidget`
+
+    .. note::
+        `To embed a` ``QPushButton`` `in a node see func:`
+    """
+
+    def __init__(self, parent=None, name='', label='', text='', state=False):
+        super(NodeButton, self).__init__(parent, name, label)
+        _cbox = QtWidgets.QPushButton(text)
+        _cbox.setMinimumWidth(80)
+        font = _cbox.font()
+        font.setPointSize(11)
+        _cbox.setFont(font)
+        self.set_custom_widget(_cbox)
+        self.widget().setMaximumWidth(140)
+
+    @property
+    def type_(self):
+        return 'ButtonNodeWidget'
+
+    def get_value(self):
+        """
+        Returns the widget checked state.
+
+        Returns:
+            bool: checked state.
+        """
+        return ''
+
+    def set_value(self, arg=''):
+        """
+        Sets the widget checked state.
+
+        Args:
+            state (bool): check state.
+        """
+        self.on_value_changed()
+
+
+
 class NodeCheckBox(NodeBaseWidget):
     """
     Displays as a ``QCheckBox`` in a node.

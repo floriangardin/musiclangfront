@@ -1,1 +1,3 @@
 Qt.py>=1.3.0
+musiclang
+pyqt5

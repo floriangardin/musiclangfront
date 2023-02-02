@@ -47,7 +47,7 @@ class NodesGridDelagate(QtWidgets.QStyledItemDelegate):
         pen.setCapStyle(QtCore.Qt.RoundCap)
         painter.setPen(pen)
         painter.setBrush(QtGui.QBrush(bg_color))
-        painter.drawRoundRect(base_rect,
+        painter.drawRoundedRect(base_rect,
                               int(base_rect.height()/radius),
                               int(base_rect.width()/radius))
 
@@ -67,7 +67,7 @@ class NodesGridDelagate(QtWidgets.QStyledItemDelegate):
             base_rect.width() - (sub_margin * 2),
             base_rect.height() - (sub_margin * 2)
         )
-        painter.drawRoundRect(sub_rect,
+        painter.drawRoundedRect(sub_rect,
                               int(sub_rect.height() / radius),
                               int(sub_rect.width() / radius))
 
@@ -126,7 +126,7 @@ class NodesGridProxyModel(QtCore.QSortFilterProxyModel):
                     for i in indexes]
         node_urn = URN_SCHEME + ';'.join(node_ids)
         mime_data = super(NodesGridProxyModel, self).mimeData(indexes)
-        mime_data.setUrls([node_urn])
+        mime_data.setUrls([QtCore.QUrl(node_urn)])
         return mime_data
 
 

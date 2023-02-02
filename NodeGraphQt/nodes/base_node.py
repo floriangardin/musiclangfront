@@ -11,7 +11,10 @@ from NodeGraphQt.qgraphics.node_base import NodeItem
 from NodeGraphQt.widgets.node_widgets import (NodeBaseWidget,
                                               NodeComboBox,
                                               NodeLineEdit,
-                                              NodeCheckBox)
+                                              NodeSpinBoxEdit,
+                                              NodeCheckBox, NodeButton,
+                                              NodeTextEdit
+                                              )
 
 
 class BaseNode(NodeObject):
@@ -199,6 +202,8 @@ class BaseNode(NodeObject):
         #: redraw node to address calls outside the "__init__" func.
         self.view.draw_node()
 
+
+
     def add_text_input(self, name, label='', text='', tab=None):
         """
         Creates a custom property with the :meth:`NodeObject.create_property`
@@ -222,6 +227,65 @@ class BaseNode(NodeObject):
             tab=tab
         )
         widget = NodeLineEdit(self.view, name, label, text)
+        widget.value_changed.connect(lambda k, v: self.set_property(k, v))
+        self.view.add_widget(widget)
+        #: redraw node to address calls outside the "__init__" func.
+        self.view.draw_node()
+
+
+
+    def add_integer_input(self, name, label='', value=0, tab=None):
+        """
+        Creates a custom property with the :meth:`NodeObject.create_property`
+        function and embeds a :class:`PySide2.QtWidgets.QLineEdit` widget
+        into the node.
+
+        Note:
+            The ``value_changed`` signal from the added node widget is wired
+            up to the :meth:`NodeObject.set_property` function.
+
+        Args:
+            name (str): name for the custom property.
+            label (str): label to be displayed.
+            text (str): pre filled text.
+            tab (str): name of the widget tab to display in.
+        """
+        self.create_property(
+            name,
+            value=value,
+            widget_type=NodePropWidgetEnum.INT.value,
+            tab=tab
+        )
+        widget = NodeSpinBoxEdit(self.view, name, label, value)
+        widget.value_changed.connect(lambda k, v: self.set_property(k, v))
+        self.view.add_widget(widget)
+        #: redraw node to address calls outside the "__init__" func.
+        self.view.draw_node()
+
+
+    def add_plain_text_input(self, name, label='', text='', tab=None):
+        """
+        Creates a custom property with the :meth:`NodeObject.create_property`
+        function and embeds a :class:`PySide2.QtWidgets.QLineEdit` widget
+        into the node.
+
+        Note:
+            The ``value_changed`` signal from the added node widget is wired
+            up to the :meth:`NodeObject.set_property` function.
+
+        Args:
+            name (str): name for the custom property.
+            label (str): label to be displayed.
+            text (str): pre filled text.
+            tab (str): name of the widget tab to display in.
+        """
+        self.create_property(
+            name,
+            value=text,
+            widget_type=NodePropWidgetEnum.QTEXT_EDIT.value,
+            tab=tab
+        )
+        widget = NodeTextEdit(self.view, name, label, text)
         widget.value_changed.connect(lambda k, v: self.set_property(k, v))
         self.view.add_widget(widget)
         #: redraw node to address calls outside the "__init__" func.
@@ -251,6 +315,36 @@ class BaseNode(NodeObject):
             tab=tab
         )
         widget = NodeCheckBox(self.view, name, label, text, state)
+        widget.value_changed.connect(lambda k, v: self.set_property(k, v))
+        self.view.add_widget(widget)
+        #: redraw node to address calls outside the "__init__" func.
+        self.view.draw_node()
+
+
+    def add_button(self, name, label='', text='', state=False, tab=None):
+        """
+        Creates a custom property with the :meth:`NodeObject.create_property`
+        function and embeds a :class:`PySide2.QtWidgets.QCheckBox` widget
+        into the node.
+
+        Note:
+            The ``value_changed`` signal from the added node widget is wired
+            up to the :meth:`NodeObject.set_property` function.
+
+        Args:
+            name (str): name for the custom property.
+            label (str): label to be displayed.
+            text (str): checkbox text.
+            state (bool): pre-check.
+            tab (str): name of the widget tab to display in.
+        """
+        self.create_property(
+            name,
+            value=state,
+            widget_type=NodePropWidgetEnum.BUTTON.value,
+            tab=tab
+        )
+        widget = NodeButton(self.view, name, label, text)
         widget.value_changed.connect(lambda k, v: self.set_property(k, v))
         self.view.add_widget(widget)
         #: redraw node to address calls outside the "__init__" func.

@@ -21,3 +21,7 @@ build
 tests/*
 
 *.egg-info
+
+
+locals/
+*.mid

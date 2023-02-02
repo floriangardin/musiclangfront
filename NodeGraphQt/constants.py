@@ -248,3 +248,6 @@ class NodePropWidgetEnum(Enum):
     INT = 18
     #: Node property represented with button widget.
     BUTTON = 19
+    #: Node property represented with plain text widget
+    #: Node property represented with a ``QLineEdit`` widget.
+    #QPLAIN_TEXT = 3
