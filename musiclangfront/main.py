@@ -25,6 +25,7 @@ from musiclangfront.nodes.library import ALL_NODES
 # import example nodes from the "example_nodes" package
 from musiclangfront import nodes
 
+PROJECT_PATH = os.path.dirname(os.path.abspath(__file__))
 
 class Window(QWidget):
     def __init__(self):
@@ -91,8 +92,8 @@ class Window(QWidget):
 
         nodes_palette.resize(10, 100)
 
-        model = QFileSystemModel()
-        model.setRootPath('')
+        model = QFileSystemModel(PROJECT_PATH)
+        model.setRootPath()
         tree = QtWidgets.QTreeView()
         tree.setModel(model)
         tree.setAnimated(False)

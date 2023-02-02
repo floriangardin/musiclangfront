@@ -13,7 +13,6 @@ class TextToScoreNode(ProcessingNode):
     # initial default node name.
     NODE_NAME = 'Score'
 
-
     def __init__(self):
         super(TextToScoreNode, self).__init__()
         # create input & output ports
