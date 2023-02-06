@@ -28,9 +28,8 @@ class TextToScoreNode(ProcessingNode):
         try:
             score = eval(str(self.get_property('text')).replace('\n', ''))
         except:
-            print('Exception')
+            pass
         self.set_property('score', score)
-        pass
 
 
 

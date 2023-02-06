@@ -5,5 +5,7 @@ ALL_NODES = [
     TextToScoreNode,
     TextToExpressionNode,
     ReverseMelodyNode,
-    ConcatScoresNode
+    ConcatScoresNode,
+    MidiFileNode,
+    ScoreDisplayerNode
 ]

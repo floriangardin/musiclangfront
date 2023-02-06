@@ -1,5 +1,7 @@
 from ..base import ProcessingNode
 from Qt import QtCore, QtWidgets
+from musiclangfront.midi_player import MidiPlayer
+
 
 class MidiPlayerNode(ProcessingNode):
     """
@@ -14,7 +16,6 @@ class MidiPlayerNode(ProcessingNode):
 
 
     def __init__(self):
-        from musiclangfront.midi_player import MidiPlayer
         super(MidiPlayerNode, self).__init__()
         self.btn_play = QtWidgets.QPushButton('Go')
         # create the checkboxes.
@@ -25,15 +26,13 @@ class MidiPlayerNode(ProcessingNode):
         self.create_property('data', None)
         # create input and output port.
         self.add_input('data')
-        self.midi_player = MidiPlayer()
-
 
     def stop(self):
-        self.midi_player.stop_music()
+        MidiPlayer().stop_music()
 
     def play(self):
         value = self.get_property('data')
-        self.midi_player.play_score(value)
+        MidiPlayer().play_score(value)
 
     def compute(self):
         pass

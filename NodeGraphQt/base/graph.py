@@ -32,6 +32,7 @@ from NodeGraphQt.nodes.port_node import PortInputNode, PortOutputNode
 from NodeGraphQt.widgets.node_graph import NodeGraphWidget, SubGraphWidget
 from NodeGraphQt.widgets.viewer import NodeViewer
 from NodeGraphQt.widgets.viewer_nav import NodeNavigationWidget
+from .json_encoder import MusicLangDecoder, MusicLangEncoder
 
 
 class NodeGraph(QtCore.QObject):
@@ -125,6 +126,8 @@ class NodeGraph(QtCore.QObject):
     :emits: new session path
     """
 
+    PROJECT_PATH = None
+
     def __init__(self, parent=None, **kwargs):
         """
         Args:
@@ -164,6 +167,10 @@ class NodeGraph(QtCore.QObject):
         self._register_context_menu()
         self._register_builtin_nodes()
         self._wire_signals()
+
+    @classmethod
+    def set_project_path(cls, project_path):
+        NodeGraph.PROJECT_PATH = project_path
 
     def __repr__(self):
         return '<{}("root") object at {}>'.format(
@@ -825,15 +832,17 @@ class NodeGraph(QtCore.QObject):
             file_path (str): serialized menu commands json file.
         """
         file_path = os.path.abspath(file_path)
-
         menu = menu or 'graph'
         if not os.path.isfile(file_path):
             raise IOError('file doesn\'t exists: "{}"'.format(file_path))
 
+
         with open(file_path) as f:
             data = json.load(f)
+
         context_menu = self.get_context_menu(menu)
         self._deserialize_context_menu(context_menu, data)
+
 
     def disable_context_menu(self, disabled=True, name='all'):
         """
@@ -1545,8 +1554,10 @@ class NodeGraph(QtCore.QObject):
                         if prop in node.view.widgets:
                             node.view.widgets[prop].set_value(val)
 
+
                 nodes[n_id] = node
                 self.add_node(node, n_data.get('pos'))
+
 
                 if n_data.get('port_deletion_allowed', None):
                     node.set_ports({
@@ -1637,7 +1648,8 @@ class NodeGraph(QtCore.QObject):
                 serialized_data,
                 file_out,
                 indent=2,
-                separators=(',', ':')
+                separators=(',', ':'),
+                cls=MusicLangEncoder
             )
 
     def load_session(self, file_path):
@@ -1672,7 +1684,7 @@ class NodeGraph(QtCore.QObject):
 
         try:
             with open(file_path) as data_file:
-                layout_data = json.load(data_file)
+                layout_data = json.load(data_file, cls=MusicLangDecoder)
         except Exception as e:
             layout_data = None
             print('Cannot read data from file.\n{}'.format(e))

@@ -1,17 +1,17 @@
 from NodeGraphQt import BaseNode
-
+import threading
 
 class ProcessingNode(BaseNode):
     """
-        An example of a node passing values automatically
-        """
+    An example of a node passing values automatically
+    """
 
     # unique node identifier.
     __identifier__ = 'nodes.processing'
 
     # initial default node name.
     NODE_NAME = 'processing'
-
+    SEP = '|'
 
     @classmethod
     def from_function(cls, fn):
@@ -21,13 +21,11 @@ class ProcessingNode(BaseNode):
 
     def __init__(self):
         super(ProcessingNode, self).__init__()
-        self.children = {}
+        self.create_property('children', {})
 
-    def add_child(self, name, node):
-        self.children[name] = node
-
-    def remove_child(self, name):
-        del self.children[name]
+    @property
+    def children(self):
+        return self.get_property('children')
 
     def compute(self):
         """
@@ -51,7 +49,8 @@ class ProcessingNode(BaseNode):
             in_port (NodeGraphQt.Port): source input port from this node.
             out_port (NodeGraphQt.Port): output port that connected to this node.
         """
-        out_port.node().add_child((out_port.name(), in_port.name()), in_port.node())
+        # key = self.SEP.join([out_port.name(), in_port.name(), out_port.node().id, in_port.node().id])
+        # out_port.node().add_child(key, in_port.node().id)
         out_port.node().execute()
         return
 
@@ -71,14 +70,38 @@ class ProcessingNode(BaseNode):
             in_port (NodeGraphQt.Port): source input port from this node.
             out_port (NodeGraphQt.Port): output port that was disconnected.
         """
-        out_port.node().remove_child((out_port.name(), in_port.name()))
         return
+
+
+    def execute_children(self):
+        for key, port in self.outputs().items():
+            children_ports = port.connected_ports()
+            out_name = port.name()
+            for child_port in children_ports:
+                in_name = child_port.name()
+                child_node = child_port.node()
+                child_node.set_property(in_name, self.get_property(out_name))
+                child_node.execute()
 
     def execute(self, *args, **kwargs):
         self.compute()
-        for key, child_node in self.children.items():
-            out_name, in_name = key
-            child_node.set_property(in_name, self.get_property(out_name))
-            child_node.execute()
+        self.execute_children()
 
+
+class AsyncProcessingNode(ProcessingNode):
+
+    def __init__(self):
+        super(AsyncProcessingNode, self).__init__()
+        self.add_checkbox('loading', '', 'is loading', state=False)
+        self.loading_widget = self.get_widget('loading')
+        self.loading_widget.value_changed.connect(lambda x: self.execute_children())
+
+    def compute_async(self):
+        self.loading_widget.set_value(True)
+        self.compute()
+        self.loading_widget.set_value(False)
+
+    def execute(self, *args, **kwargs):
+        x = threading.Thread(target=self.compute_async)
+        x.start()
 

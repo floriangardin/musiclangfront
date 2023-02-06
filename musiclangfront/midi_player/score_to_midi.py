@@ -33,7 +33,9 @@ bitsize = -16   # unsigned 16 bit
 channels = 2    # 1 is mono, 2 is stereo
 buffer = 1024   # number of samples
 
-
+pygame.mixer.init(freq, bitsize, channels, buffer)
+# optional volume 0 to 1.0
+pygame.mixer.music.set_volume(0.8)
 
 class MidiPlayer:
 
@@ -41,11 +43,6 @@ class MidiPlayer:
     STOP_THREAD = False
     PAUSE_THREAD = False
     UNPAUSE_THREAD = False
-
-    def __init__(self):
-        pygame.mixer.init(freq, bitsize, channels, buffer)
-        # optional volume 0 to 1.0
-        pygame.mixer.music.set_volume(0.8)
 
 
     def play_music_thread(self, music_file):
