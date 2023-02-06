@@ -18,10 +18,11 @@ from PyQt5.QtWidgets import (
 )
 
 
+## LOAD NECESSARY LIBRARIES
 from musiclangfront.nodes.library import ALL_NODES
 from musiclangfront.midi_player.score_to_midi import MidiPlayer
-# import example nodes from the "example_nodes" package
 from musiclangfront import nodes
+from musiclang.analyze.augmented_net.inference import get_model
 
 PROJECT_PATH = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), '../'))
 EXAMPLE_PATH = os.path.join(PROJECT_PATH, "locals/example")
